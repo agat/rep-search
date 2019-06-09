@@ -4,7 +4,7 @@ import React, { useCallback } from 'react';
 import {
     SortT,
     OrderT
-} from 'reducer';
+} from 'store/reducer';
 
 
 import styles from './THeader.module.css';

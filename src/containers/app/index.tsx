@@ -1,14 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useCallback } from 'react';
-import { useLocalStorageReducer } from 'react-storage-hooks';
+import React, { PureComponent } from 'react';
+import { Dispatch, AnyAction } from 'redux';
+import { connect } from 'react-redux';
 
-import actionUtils from 'reducer/actionUtils';
 import {
-    reducer,
-    SearchInitialState,
+    SearchStateI,
     SortT,
     OrderT
-} from 'reducer';
+} from 'store/reducer';
 
 import Row from 'components/Row';
 import Headline from 'components/Typography/Headline';
@@ -18,55 +17,78 @@ import QueryForm from './QueryForm';
 import SearchResultTable from './SearchResultTable';
 
 import styles from './App.module.css';
-import actions from 'reducer/actions';
+import actions from 'store/reducer/actions';
 
+type PropsT = SearchStateI & {
+    dispatch: Dispatch<AnyAction>
+};
 
-const App = () => {
-    const [state, dispatch] = useLocalStorageReducer('search', reducer, SearchInitialState);
-    const hadnleLoadMoreClick = useCallback(() => actionUtils.loadMore(dispatch, state), [state.query, state.page]);
-    const handleSortChange = useCallback((sort: SortT, order: OrderT) => {
+class App extends PureComponent<PropsT> {
+    handleSortChange = (sort: SortT, order: OrderT) => {
+        const {
+            dispatch,
+            ...state
+        } = this.props;
+
         dispatch(actions.changeSorting(sort, order));
-        actionUtils.search(state.query, sort, order, dispatch);
-    }, [state.query]);
+        // @ts-ignore
+        dispatch(actions.search(state.query, sort, order));
+    };
 
-    return (
-        <div className={styles.app}>
-            <Row>
-                <Headline>
-                    Repository Search
-                </Headline>
-            </Row>
-            <Row>
-                <QueryForm
-                    defaultValue={state.query}
-                    state={state}
-                    dispatch={dispatch}
-                />
-            </Row>
-            {!!state.repositories.length &&
+    hadnleLoadMoreClick = () => {
+        const {
+            dispatch
+        } = this.props;
+
+        // @ts-ignore
+        dispatch(actions.loadMore());
+    };
+
+    render () {
+        const {
+            dispatch,
+            ...state
+        } = this.props;
+
+        return (
+            <div className={styles.app}>
                 <Row>
-                    <SearchResultTable
-                        sort={state.sort}
-                        order={state.order}
-                        repositories={state.repositories}
-                        onChangeSort={handleSortChange}
+                    <Headline>
+                        Repository Search
+                    </Headline>
+                </Row>
+                <Row>
+                    <QueryForm
+                        defaultValue={state.query}
+                        state={state}
+                        dispatch={dispatch}
                     />
                 </Row>
-            }
-            <Row isCentered>
-                {state.isFetching &&
-                    <Button>
-                        Loading...
-                    </Button>
+                {!!state.repositories.length &&
+                    <Row>
+                        <SearchResultTable
+                            sort={state.sort}
+                            order={state.order}
+                            repositories={state.repositories}
+                            onChangeSort={this.handleSortChange}
+                        />
+                    </Row>
                 }
-                {!state.isFetching && state.repositories.length > 0 &&
-                    <Button onClick={hadnleLoadMoreClick}>
-                        Load more
-                    </Button>
-                }
-            </Row>
-        </div>
-    );
+                <Row isCentered>
+                    {state.isFetching &&
+                        <Button>
+                            Loading...
+                        </Button>
+                    }
+                    {!state.isFetching && state.repositories.length > 0 &&
+                        <Button onClick={this.hadnleLoadMoreClick}>
+                            Load more
+                        </Button>
+                    }
+                </Row>
+            </div>
+        );
+    }
 }
 
-export default App;
+export default connect((state: SearchStateI) => state)(App);

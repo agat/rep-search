@@ -1,8 +1,11 @@
+import { AnyAction, Dispatch } from 'redux';
+import { searchRepositories } from 'api';
 import {
+    SearchStateI,
     RepositoryI,
     SortT,
     OrderT
-} from './index';
+} from 'store/reducer/';
 
 
 export type ClearActionT = {
@@ -82,6 +85,50 @@ export const apiFail = (): ActionT => ({
 });
 
 
+export const search = (query: string, sort: SortT, order: OrderT) => {
+    return async (dispatch: Dispatch<AnyAction>) => {
+        if (query.trim()) {
+            dispatch(apiSearchRepository(query));
+
+            const result = await searchRepositories({
+                q: query,
+                sort,
+                order,
+                page: 1
+            });
+
+            if (result.items) {
+                dispatch(apiSearchRepositorySuccess(result.items, result.total_count));
+            } else {
+                dispatch(apiFail());
+            }
+        } else {
+            dispatch(clear());
+        }
+    };
+};
+
+export const loadMore = () => {
+    return async (dispatch: Dispatch<AnyAction>, getState: () => SearchStateI) => {
+        const state = getState();
+
+        dispatch(apiGetNextPage());
+
+        const result = await searchRepositories({
+            q: state.query,
+            sort: state.sort,
+            order: state.order,
+            page: state.page + 1
+        });
+
+        if (result.items) {
+            dispatch(apiGetNextSuccess(result.items, result.total_count));
+        } else {
+            dispatch(apiFail());
+        }
+    };
+};
+
 export type ActionT =
     | ChangeSortingActionT
     | ApiSearchRepositoryActionT
@@ -98,5 +145,7 @@ export default {
     apiSearchRepositorySuccess,
     apiGetNextPage,
     apiGetNextSuccess,
-    apiFail
+    apiFail,
+    search,
+    loadMore
 };

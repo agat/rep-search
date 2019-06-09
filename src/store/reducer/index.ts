@@ -36,7 +36,7 @@ export const SearchInitialState: SearchStateI = {
     isFetching: false
 }
 
-export const reducer = (state: SearchStateI, action: ActionT): SearchStateI => {
+const reducer = (state: SearchStateI = SearchInitialState, action: ActionT): SearchStateI => {
     switch (action.type) {
         case 'CLEAR': {
             return {
@@ -89,3 +89,5 @@ export const reducer = (state: SearchStateI, action: ActionT): SearchStateI => {
             return state;
     }
 };
+
+export default reducer;

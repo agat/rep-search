@@ -1,16 +1,17 @@
 import React, { useCallback, useRef } from 'react';
+import { AnyAction, Dispatch } from 'redux';
 
 import Input from 'components/Input';
-import actionUtils from 'reducer/actionUtils';
+import actions from 'store/reducer/actions';
 
 import {
     SearchStateI
-} from 'reducer';
+} from 'store/reducer';
 
 type PropsT = {
     defaultValue: string,
     state: SearchStateI,
-    dispatch: Function
+    dispatch: Dispatch<AnyAction>
 };
 
 const QueryForm = ({
@@ -24,10 +25,10 @@ const QueryForm = ({
 
         if (inputRef.current && !state.isFetching) {
             const query = inputRef.current.value;
-
-            actionUtils.search(query, state.sort, state.order, dispatch);
+            // @ts-ignore
+            dispatch(actions.search(query, state.sort, state.order));
         }
-    }, [inputRef, state.isFetching, state.sort, state.order]);
+    }, [inputRef, state.isFetching, state.sort, state.order, dispatch]);
     const handleInputBlur = useCallback(() => handleQueryBlurEvent(inputRef.current, state.query), [inputRef, state.query]);
 
     return (

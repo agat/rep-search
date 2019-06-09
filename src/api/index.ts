@@ -4,7 +4,7 @@ import {
     RepositoryI,
     SortT,
     OrderT
-} from 'reducer';
+} from 'store/reducer';
 
 type SearchParamsT = {
     q: string,
