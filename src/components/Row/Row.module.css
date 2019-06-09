@@ -1,0 +1,12 @@
+.row {
+    margin-top: 24px;
+}
+
+.row:first-child {
+    margin-top: 0;
+}
+
+.rowCentered {
+    display: flex;
+    justify-content: center;
+}

@@ -1,0 +1,17 @@
+.input {
+    display: block;
+    width: 100%;
+    outline: 0;
+    height: 56px;
+    line-height: 56px;
+    font-size: 20px;
+    border-radius: 4px;
+    padding: 0 16px;
+    border: 2px solid #ccc;
+    box-sizing: border-box;
+}
+
+.input:focus,
+.input:hover {
+    border-color: #000;
+}

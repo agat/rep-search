@@ -1,0 +1,11 @@
+.number {
+    color: #9E9E9E;
+}
+
+.numberPositive {
+    color: #3F51B5;
+}
+
+.numberNegative {
+    color: #E91E63;
+}

@@ -1,0 +1,16 @@
+.th {
+    cursor: pointer;
+    color: #009688;
+}
+
+.arrow {
+    display: inline-block;
+    margin: 0 8px 0 4px;
+}
+
+.clearSorting {
+    font-size: 26px;
+    line-height: 8px;
+    position: relative;
+    top: 3px;
+}

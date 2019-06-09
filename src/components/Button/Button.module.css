@@ -1,0 +1,29 @@
+.button {
+    color: inherit;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    min-width: 88px;
+    height: 36px;
+    padding: 0 14px;
+    border: 2px solid currentColor;
+    border-radius: 4px;
+    outline: 0;
+    background: transparent;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 32px;
+    text-align: center;
+    text-decoration: none;
+    text-transform: uppercase;
+    overflow: hidden;
+    vertical-align: middle;
+    user-select: none;
+    box-sizing: border-box;
+    -webkit-appearance: none;
+}
+
+.button:hover {
+    cursor: pointer;
+}

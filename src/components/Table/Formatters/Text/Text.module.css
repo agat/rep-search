@@ -1,0 +1,12 @@
+.text {
+    display: table;
+    table-layout: fixed;
+    width: 100%;
+}
+
+.body {
+    display: table-cell;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
