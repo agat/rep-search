@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useCallback, useRef, useEffect } from 'react';
+import React, { useCallback } from 'react';
 import { useLocalStorageReducer } from 'react-storage-hooks';
 
 import actionUtils from 'reducer/actionUtils';
@@ -12,9 +12,9 @@ import {
 
 import Row from 'components/Row';
 import Headline from 'components/Typography/Headline';
-import Input from 'components/Input';
 import Button from 'components/Button';
 
+import QueryForm from './QueryForm';
 import SearchResultTable from './SearchResultTable';
 
 import styles from './App.module.css';
@@ -23,17 +23,6 @@ import actions from 'reducer/actions';
 
 const App = () => {
     const [state, dispatch] = useLocalStorageReducer('search', reducer, SearchInitialState);
-    const inputRef = useRef<HTMLInputElement>(null);
-    const handleFormSubmit = useCallback((e: React.FormEvent) => {
-        e.preventDefault();
-
-        if (inputRef.current && !state.isFetching) {
-            const query = inputRef.current.value;
-
-            actionUtils.search(query, state.sort, state.order, dispatch);
-        }
-    }, [inputRef, state.isFetching, state.sort, state.order]);
-    const handleInputBlur = useCallback(() => handleQueryBlurEvent(inputRef.current, state.query), [inputRef, state.query]);
     const hadnleLoadMoreClick = useCallback(() => actionUtils.loadMore(dispatch, state), [state.query, state.page]);
     const handleSortChange = useCallback((sort: SortT, order: OrderT) => {
         dispatch(actions.changeSorting(sort, order));
@@ -48,18 +37,11 @@ const App = () => {
                 </Headline>
             </Row>
             <Row>
-                <form onSubmit={handleFormSubmit}>
-                    <Input
-                        ref={inputRef}
-                        defaultValue={state.query}
-                        onBlur={handleInputBlur}
-                        placeholder="Type anything here..."
-                    />
-                    <button
-                        type="submit"
-                        hidden
-                    ></button>
-                </form>
+                <QueryForm
+                    defaultValue={state.query}
+                    state={state}
+                    dispatch={dispatch}
+                />
             </Row>
             {!!state.repositories.length &&
                 <Row>
@@ -86,15 +68,5 @@ const App = () => {
         </div>
     );
 }
-
-const handleQueryBlurEvent = (inputRef: HTMLInputElement | null, query: string) => {
-    if (inputRef) {
-        const q = inputRef.value;
-
-        if (!q.trim()) {
-            inputRef.value = query;
-        }
-    }
-};
 
 export default App;
