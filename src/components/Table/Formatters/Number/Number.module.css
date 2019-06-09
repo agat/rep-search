@@ -1,5 +1,7 @@
 .number {
+    display: block;
     color: #9E9E9E;
+    text-align: right;
 }
 
 .numberPositive {
